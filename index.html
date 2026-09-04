@@ -465,7 +465,7 @@ let db;
 const request =
     indexedDB.open(
         "BusinessManagementDB",
-        2
+        3
     );
 
 
@@ -503,6 +503,19 @@ request.onupgradeneeded =
             );
 
         }
+
+
+        /* SALES */
+
+if (!db.objectStoreNames.contains("sales")) {
+    db.createObjectStore(
+        "sales",
+        {
+            keyPath: "id",
+            autoIncrement: true
+        }
+    );
+}
 
     };
 

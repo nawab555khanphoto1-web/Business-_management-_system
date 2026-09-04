@@ -1,4 +1,4 @@
-const CACHE_NAME = "business-system-v2";
+const CACHE_NAME = "business-system-v3";
 
 const FILES_TO_CACHE = [
     "./",

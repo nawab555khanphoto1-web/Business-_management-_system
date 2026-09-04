@@ -1,15 +1,24 @@
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#111827">
-    <link rel="manifest" href="./manifest.json">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <meta name="theme-color"
+          content="#111827">
+
+    <link rel="manifest"
+          href="./manifest.json">
 
     <title>Business Management System</title>
 
+
     <style>
+
         * {
             box-sizing: border-box;
         }
@@ -41,7 +50,7 @@
         .status,
         .card,
         .form-box,
-        .ledger {
+        .item {
             background: white;
             padding: 18px;
             border-radius: 12px;
@@ -86,6 +95,12 @@
             background: #6b7280;
         }
 
+        button.delete {
+            background: #dc2626;
+            padding: 9px 12px;
+            font-size: 13px;
+        }
+
         input,
         select {
             width: 100%;
@@ -104,28 +119,24 @@
             display: none;
         }
 
-        .ledger {
-            position: relative;
-        }
-
-        .ledger h3 {
-            margin-top: 0;
-        }
-
-        .delete {
-            background: #dc2626;
-            padding: 8px 12px;
-            font-size: 13px;
-            margin-top: 8px;
-        }
-
         .empty {
             text-align: center;
             padding: 30px;
             color: #6b7280;
         }
 
+        .stock-good {
+            color: green;
+            font-weight: bold;
+        }
+
+        .stock-low {
+            color: red;
+            font-weight: bold;
+        }
+
         @media (max-width: 600px) {
+
             .dashboard {
                 grid-template-columns: 1fr;
             }
@@ -133,25 +144,38 @@
             .menu {
                 grid-template-columns: 1fr;
             }
+
         }
+
     </style>
+
 </head>
+
 
 <body>
 
+
 <header>
+
     <h1>My Business Management System</h1>
+
 </header>
+
 
 <div class="container">
 
+
     <!-- DASHBOARD -->
+
     <section id="dashboard">
 
         <div class="status">
+
             Internet:
             <span id="networkStatus"></span>
+
         </div>
+
 
         <div class="dashboard">
 
@@ -182,248 +206,551 @@
 
             <div class="card">
                 <h3>Stock</h3>
-                <strong>0</strong>
+                <strong id="stockSummary">0</strong>
             </div>
 
         </div>
 
+
         <div class="menu">
-            <button onclick="showLedgers()">Customers & Suppliers</button>
-            <button>Products</button>
-            <button>Sales Invoice</button>
-            <button>Purchase Invoice</button>
-            <button>Payments</button>
-            <button>Reports</button>
+
+            <button onclick="showLedgers()">
+                Customers & Suppliers
+            </button>
+
+            <button onclick="showProducts()">
+                Products
+            </button>
+
+            <button>
+                Sales Invoice
+            </button>
+
+            <button>
+                Purchase Invoice
+            </button>
+
+            <button>
+                Payments
+            </button>
+
+            <button>
+                Reports
+            </button>
+
         </div>
 
     </section>
 
 
+
     <!-- LEDGERS -->
+
     <section id="ledgersPage" class="hidden">
 
-        <button class="secondary" onclick="showDashboard()">
+
+        <button class="secondary"
+                onclick="showDashboard()">
+
             ← Back to Dashboard
+
         </button>
 
+
         <h2>Customers & Suppliers</h2>
+
 
         <div class="form-box">
 
             <h3>Add New Ledger</h3>
 
+
             <label>Name</label>
-            <input id="ledgerName" type="text"
+
+            <input id="ledgerName"
+                   type="text"
                    placeholder="Customer or supplier name">
 
+
             <label>City</label>
-            <input id="ledgerCity" type="text"
+
+            <input id="ledgerCity"
+                   type="text"
                    placeholder="City">
 
+
             <label>Phone</label>
-            <input id="ledgerPhone" type="tel"
+
+            <input id="ledgerPhone"
+                   type="tel"
                    placeholder="Phone number">
 
+
             <label>Type</label>
+
             <select id="ledgerType">
-                <option value="customer">Customer</option>
-                <option value="supplier">Supplier</option>
+
+                <option value="customer">
+                    Customer
+                </option>
+
+                <option value="supplier">
+                    Supplier
+                </option>
+
             </select>
 
+
             <label>Opening Balance</label>
-            <input id="openingBalance" type="number"
+
+            <input id="openingBalance"
+                   type="number"
                    placeholder="0">
 
-            <button onclick="addLedger()">Save Ledger</button>
+
+            <button onclick="addLedger()">
+                Save Ledger
+            </button>
 
         </div>
+
 
         <h3>My Ledgers</h3>
 
         <div id="ledgerList"></div>
 
+
     </section>
+
+
+
+    <!-- PRODUCTS -->
+
+    <section id="productsPage" class="hidden">
+
+
+        <button class="secondary"
+                onclick="showDashboard()">
+
+            ← Back to Dashboard
+
+        </button>
+
+
+        <h2>Products</h2>
+
+
+        <div class="form-box">
+
+            <h3>Add New Product</h3>
+
+
+            <label>Product Name</label>
+
+            <input id="productName"
+                   type="text"
+                   placeholder="Example: 20x40 Bag">
+
+
+            <label>Product Code</label>
+
+            <input id="productCode"
+                   type="text"
+                   placeholder="Example: B2040">
+
+
+            <label>Opening Stock</label>
+
+            <input id="openingStock"
+                   type="number"
+                   placeholder="0">
+
+
+            <label>Purchase Price</label>
+
+            <input id="purchasePrice"
+                   type="number"
+                   placeholder="0">
+
+
+            <label>Selling Price</label>
+
+            <input id="sellingPrice"
+                   type="number"
+                   placeholder="0">
+
+
+            <label>Minimum Stock Level</label>
+
+            <input id="minimumStock"
+                   type="number"
+                   placeholder="0">
+
+
+            <button onclick="addProduct()">
+                Save Product
+            </button>
+
+        </div>
+
+
+        <h3>My Products</h3>
+
+
+        <div id="productList"></div>
+
+
+    </section>
+
 
 </div>
 
 
+
 <script>
 
-    /* -----------------------------
-       NETWORK STATUS
-    ----------------------------- */
 
-    function updateNetworkStatus() {
+/* =========================
+   NETWORK STATUS
+========================= */
 
-        const status = document.getElementById("networkStatus");
 
-        if (navigator.onLine) {
-            status.textContent = "Online";
-            status.className = "online";
-        } else {
-            status.textContent = "Offline";
-            status.className = "offline";
-        }
+function updateNetworkStatus() {
+
+    const status =
+        document.getElementById("networkStatus");
+
+
+    if (navigator.onLine) {
+
+        status.textContent = "Online";
+
+        status.className = "online";
+
+    } else {
+
+        status.textContent = "Offline";
+
+        status.className = "offline";
+
     }
 
-    updateNetworkStatus();
-
-    window.addEventListener("online", updateNetworkStatus);
-    window.addEventListener("offline", updateNetworkStatus);
+}
 
 
-    /* -----------------------------
-       LOCAL DATABASE
-    ----------------------------- */
+updateNetworkStatus();
 
-    let db;
 
-    const request = indexedDB.open("BusinessManagementDB", 1);
+window.addEventListener(
+    "online",
+    updateNetworkStatus
+);
 
-    request.onupgradeneeded = function(event) {
+
+window.addEventListener(
+    "offline",
+    updateNetworkStatus
+);
+
+
+
+/* =========================
+   DATABASE
+========================= */
+
+
+let db;
+
+
+const request =
+    indexedDB.open(
+        "BusinessManagementDB",
+        2
+    );
+
+
+request.onupgradeneeded =
+    function(event) {
 
         db = event.target.result;
 
+
+        /* LEDGERS */
+
         if (!db.objectStoreNames.contains("ledgers")) {
 
-            db.createObjectStore("ledgers", {
-                keyPath: "id",
-                autoIncrement: true
-            });
+            db.createObjectStore(
+                "ledgers",
+                {
+                    keyPath: "id",
+                    autoIncrement: true
+                }
+            );
 
         }
+
+
+        /* PRODUCTS */
+
+        if (!db.objectStoreNames.contains("products")) {
+
+            db.createObjectStore(
+                "products",
+                {
+                    keyPath: "id",
+                    autoIncrement: true
+                }
+            );
+
+        }
+
     };
 
-    request.onsuccess = function(event) {
+
+request.onsuccess =
+    function(event) {
 
         db = event.target.result;
 
         console.log("Database ready");
 
         displayLedgers();
-    };
 
-    request.onerror = function() {
-
-        alert("Could not open local database.");
+        displayProducts();
 
     };
 
 
-    /* -----------------------------
-       PAGE NAVIGATION
-    ----------------------------- */
+request.onerror =
+    function() {
 
-    function showLedgers() {
+        alert(
+            "Could not open local database."
+        );
 
-        document.getElementById("dashboard")
-            .classList.add("hidden");
+    };
 
-        document.getElementById("ledgersPage")
-            .classList.remove("hidden");
 
-        displayLedgers();
+
+/* =========================
+   NAVIGATION
+========================= */
+
+
+function hideAllPages() {
+
+    document
+        .getElementById("dashboard")
+        .classList.add("hidden");
+
+    document
+        .getElementById("ledgersPage")
+        .classList.add("hidden");
+
+    document
+        .getElementById("productsPage")
+        .classList.add("hidden");
+
+}
+
+
+function showDashboard() {
+
+    hideAllPages();
+
+    document
+        .getElementById("dashboard")
+        .classList.remove("hidden");
+
+}
+
+
+function showLedgers() {
+
+    hideAllPages();
+
+    document
+        .getElementById("ledgersPage")
+        .classList.remove("hidden");
+
+    displayLedgers();
+
+}
+
+
+function showProducts() {
+
+    hideAllPages();
+
+    document
+        .getElementById("productsPage")
+        .classList.remove("hidden");
+
+    displayProducts();
+
+}
+
+
+
+/* =========================
+   ADD LEDGER
+========================= */
+
+
+function addLedger() {
+
+    const name =
+        document
+        .getElementById("ledgerName")
+        .value
+        .trim();
+
+
+    const city =
+        document
+        .getElementById("ledgerCity")
+        .value
+        .trim();
+
+
+    const phone =
+        document
+        .getElementById("ledgerPhone")
+        .value
+        .trim();
+
+
+    const type =
+        document
+        .getElementById("ledgerType")
+        .value;
+
+
+    const openingBalance =
+        Number(
+            document
+            .getElementById("openingBalance")
+            .value
+        ) || 0;
+
+
+    if (!name) {
+
+        alert(
+            "Please enter a name."
+        );
+
+        return;
+
     }
 
-    function showDashboard() {
 
-        document.getElementById("ledgersPage")
-            .classList.add("hidden");
-
-        document.getElementById("dashboard")
-            .classList.remove("hidden");
-    }
+    const transaction =
+        db.transaction(
+            ["ledgers"],
+            "readwrite"
+        );
 
 
-    /* -----------------------------
-       ADD LEDGER
-    ----------------------------- */
-
-    function addLedger() {
-
-        const name =
-            document.getElementById("ledgerName").value.trim();
-
-        const city =
-            document.getElementById("ledgerCity").value.trim();
-
-        const phone =
-            document.getElementById("ledgerPhone").value.trim();
-
-        const type =
-            document.getElementById("ledgerType").value;
-
-        const openingBalance =
-            Number(document.getElementById("openingBalance").value) || 0;
+    const store =
+        transaction
+        .objectStore("ledgers");
 
 
-        if (!name) {
+    store.add({
 
-            alert("Please enter a name.");
+        name: name,
 
-            return;
-        }
+        city: city,
 
+        phone: phone,
 
-        const transaction =
-            db.transaction(["ledgers"], "readwrite");
+        type: type,
 
-        const store =
-            transaction.objectStore("ledgers");
+        openingBalance: openingBalance,
 
+        createdAt:
+            new Date().toISOString()
 
-        store.add({
-
-            name: name,
-            city: city,
-            phone: phone,
-            type: type,
-            openingBalance: openingBalance,
-            createdAt: new Date().toISOString()
-
-        });
+    });
 
 
-        transaction.oncomplete = function() {
+    transaction.oncomplete =
+        function() {
 
-            alert("Ledger saved successfully.");
+            alert(
+                "Ledger saved successfully."
+            );
 
-            document.getElementById("ledgerName").value = "";
-            document.getElementById("ledgerCity").value = "";
-            document.getElementById("ledgerPhone").value = "";
-            document.getElementById("openingBalance").value = "";
+
+            document
+                .getElementById("ledgerName")
+                .value = "";
+
+
+            document
+                .getElementById("ledgerCity")
+                .value = "";
+
+
+            document
+                .getElementById("ledgerPhone")
+                .value = "";
+
+
+            document
+                .getElementById("openingBalance")
+                .value = "";
+
 
             displayLedgers();
 
         };
 
-    }
+}
 
 
-    /* -----------------------------
-       DISPLAY LEDGERS
-    ----------------------------- */
 
-    function displayLedgers() {
-
-        if (!db) return;
-
-        const transaction =
-            db.transaction(["ledgers"], "readonly");
-
-        const store =
-            transaction.objectStore("ledgers");
-
-        const request =
-            store.getAll();
+/* =========================
+   DISPLAY LEDGERS
+========================= */
 
 
-        request.onsuccess = function() {
+function displayLedgers() {
 
-            const ledgers = request.result;
+    if (!db) return;
+
+
+    const transaction =
+        db.transaction(
+            ["ledgers"],
+            "readonly"
+        );
+
+
+    const store =
+        transaction.objectStore(
+            "ledgers"
+        );
+
+
+    const request =
+        store.getAll();
+
+
+    request.onsuccess =
+        function() {
+
+            const ledgers =
+                request.result;
+
 
             const list =
-                document.getElementById("ledgerList");
+                document
+                .getElementById(
+                    "ledgerList"
+                );
+
 
             list.innerHTML = "";
 
@@ -434,94 +761,493 @@
                     '<div class="empty">No ledgers yet.</div>';
 
                 return;
+
             }
 
 
-            ledgers.forEach(function(ledger) {
+            ledgers.forEach(
+                function(ledger) {
 
-                const div =
-                    document.createElement("div");
+                    const div =
+                        document.createElement(
+                            "div"
+                        );
 
-                div.className = "ledger";
 
-                div.innerHTML = `
+                    div.className =
+                        "item";
 
-                    <h3>${ledger.name}</h3>
 
-                    <p>
-                        <strong>Type:</strong>
-                        ${ledger.type}
-                    </p>
+                    div.innerHTML = `
 
-                    <p>
-                        <strong>City:</strong>
-                        ${ledger.city || "-"}
-                    </p>
+                        <h3>
+                            ${ledger.name}
+                        </h3>
 
-                    <p>
-                        <strong>Phone:</strong>
-                        ${ledger.phone || "-"}
-                    </p>
+                        <p>
+                            <strong>Type:</strong>
+                            ${ledger.type}
+                        </p>
 
-                    <p>
-                        <strong>Opening Balance:</strong>
-                        Rs. ${ledger.openingBalance}
-                    </p>
+                        <p>
+                            <strong>City:</strong>
+                            ${ledger.city || "-"}
+                        </p>
 
-                    <button class="delete"
-                        onclick="deleteLedger(${ledger.id})">
-                        Delete
-                    </button>
+                        <p>
+                            <strong>Phone:</strong>
+                            ${ledger.phone || "-"}
+                        </p>
 
-                `;
+                        <p>
+                            <strong>
+                                Opening Balance:
+                            </strong>
 
-                list.appendChild(div);
+                            Rs. ${ledger.openingBalance}
+                        </p>
 
-            });
+                        <button
+                            class="delete"
+                            onclick="deleteLedger(${ledger.id})">
+
+                            Delete
+
+                        </button>
+
+                    `;
+
+
+                    list.appendChild(div);
+
+                }
+            );
 
         };
 
-    }
+}
 
 
-    /* -----------------------------
-       DELETE LEDGER
-    ----------------------------- */
 
-    function deleteLedger(id) {
-
-        if (!confirm("Delete this ledger?")) return;
+/* =========================
+   DELETE LEDGER
+========================= */
 
 
-        const transaction =
-            db.transaction(["ledgers"], "readwrite");
+function deleteLedger(id) {
 
-        const store =
-            transaction.objectStore("ledgers");
+    if (
+        !confirm(
+            "Delete this ledger?"
+        )
+    ) return;
 
-        store.delete(id);
+
+    const transaction =
+        db.transaction(
+            ["ledgers"],
+            "readwrite"
+        );
 
 
-        transaction.oncomplete = function() {
+    const store =
+        transaction
+        .objectStore("ledgers");
+
+
+    store.delete(id);
+
+
+    transaction.oncomplete =
+        function() {
 
             displayLedgers();
 
         };
 
+}
+
+
+
+/* =========================
+   ADD PRODUCT
+========================= */
+
+
+function addProduct() {
+
+    const name =
+        document
+        .getElementById("productName")
+        .value
+        .trim();
+
+
+    const code =
+        document
+        .getElementById("productCode")
+        .value
+        .trim();
+
+
+    const openingStock =
+        Number(
+            document
+            .getElementById("openingStock")
+            .value
+        ) || 0;
+
+
+    const purchasePrice =
+        Number(
+            document
+            .getElementById("purchasePrice")
+            .value
+        ) || 0;
+
+
+    const sellingPrice =
+        Number(
+            document
+            .getElementById("sellingPrice")
+            .value
+        ) || 0;
+
+
+    const minimumStock =
+        Number(
+            document
+            .getElementById("minimumStock")
+            .value
+        ) || 0;
+
+
+    if (!name) {
+
+        alert(
+            "Please enter a product name."
+        );
+
+        return;
+
     }
 
 
-    /* -----------------------------
-       SERVICE WORKER
-    ----------------------------- */
+    const transaction =
+        db.transaction(
+            ["products"],
+            "readwrite"
+        );
 
-    if ("serviceWorker" in navigator) {
 
-        navigator.serviceWorker.register("./sw.js");
+    const store =
+        transaction
+        .objectStore("products");
 
-    }
+
+    store.add({
+
+        name: name,
+
+        code: code,
+
+        openingStock: openingStock,
+
+        currentStock: openingStock,
+
+        purchasePrice: purchasePrice,
+
+        sellingPrice: sellingPrice,
+
+        minimumStock: minimumStock,
+
+        createdAt:
+            new Date().toISOString()
+
+    });
+
+
+    transaction.oncomplete =
+        function() {
+
+            alert(
+                "Product saved successfully."
+            );
+
+
+            document
+                .getElementById("productName")
+                .value = "";
+
+
+            document
+                .getElementById("productCode")
+                .value = "";
+
+
+            document
+                .getElementById("openingStock")
+                .value = "";
+
+
+            document
+                .getElementById("purchasePrice")
+                .value = "";
+
+
+            document
+                .getElementById("sellingPrice")
+                .value = "";
+
+
+            document
+                .getElementById("minimumStock")
+                .value = "";
+
+
+            displayProducts();
+
+        };
+
+}
+
+
+
+/* =========================
+   DISPLAY PRODUCTS
+========================= */
+
+
+function displayProducts() {
+
+    if (!db) return;
+
+
+    const transaction =
+        db.transaction(
+            ["products"],
+            "readonly"
+        );
+
+
+    const store =
+        transaction.objectStore(
+            "products"
+        );
+
+
+    const request =
+        store.getAll();
+
+
+    request.onsuccess =
+        function() {
+
+            const products =
+                request.result;
+
+
+            const list =
+                document
+                .getElementById(
+                    "productList"
+                );
+
+
+            list.innerHTML = "";
+
+
+            if (products.length === 0) {
+
+                list.innerHTML =
+                    '<div class="empty">No products yet.</div>';
+
+                return;
+
+            }
+
+
+            products.forEach(
+                function(product) {
+
+                    const div =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    div.className =
+                        "item";
+
+
+                    const stockClass =
+                        product.currentStock <=
+                        product.minimumStock
+                        ? "stock-low"
+                        : "stock-good";
+
+
+                    div.innerHTML = `
+
+                        <h3>
+                            ${product.name}
+                        </h3>
+
+                        <p>
+                            <strong>Code:</strong>
+                            ${product.code || "-"}
+                        </p>
+
+                        <p>
+                            <strong>
+                                Current Stock:
+                            </strong>
+
+                            <span class="${stockClass}">
+                                ${product.currentStock}
+                            </span>
+                        </p>
+
+                        <p>
+                            <strong>
+                                Purchase Price:
+                            </strong>
+
+                            Rs. ${product.purchasePrice}
+                        </p>
+
+                        <p>
+                            <strong>
+                                Selling Price:
+                            </strong>
+
+                            Rs. ${product.sellingPrice}
+                        </p>
+
+                        <p>
+                            <strong>
+                                Minimum Stock:
+                            </strong>
+
+                            ${product.minimumStock}
+                        </p>
+
+                        <button
+                            class="delete"
+                            onclick="deleteProduct(${product.id})">
+
+                            Delete
+
+                        </button>
+
+                    `;
+
+
+                    list.appendChild(div);
+
+                }
+            );
+
+
+            updateStockSummary(products);
+
+        };
+
+}
+
+
+
+/* =========================
+   STOCK SUMMARY
+========================= */
+
+
+function updateStockSummary(products) {
+
+    let total = 0;
+
+
+    products.forEach(
+        function(product) {
+
+            total +=
+                Number(
+                    product.currentStock
+                );
+
+        }
+    );
+
+
+    document
+        .getElementById(
+            "stockSummary"
+        )
+        .textContent = total;
+
+}
+
+
+
+/* =========================
+   DELETE PRODUCT
+========================= */
+
+
+function deleteProduct(id) {
+
+    if (
+        !confirm(
+            "Delete this product?"
+        )
+    ) return;
+
+
+    const transaction =
+        db.transaction(
+            ["products"],
+            "readwrite"
+        );
+
+
+    const store =
+        transaction
+        .objectStore("products");
+
+
+    store.delete(id);
+
+
+    transaction.oncomplete =
+        function() {
+
+            displayProducts();
+
+        };
+
+}
+
+
+
+/* =========================
+   SERVICE WORKER
+========================= */
+
+
+if (
+    "serviceWorker" in navigator
+) {
+
+    navigator.serviceWorker.register(
+        "./sw.js"
+    );
+
+}
+
 
 </script>
 
+
 </body>
+
 </html>

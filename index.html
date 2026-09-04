@@ -4,14 +4,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <meta name="theme-color" content="#111827">
-
     <link rel="manifest" href="./manifest.json">
 
     <title>Business Management System</title>
 
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -36,11 +38,15 @@
             margin: auto;
         }
 
-        .status {
+        .status,
+        .card,
+        .form-box,
+        .ledger {
             background: white;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
+            padding: 18px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         }
 
         .online {
@@ -55,25 +61,14 @@
 
         .dashboard {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            grid-template-columns: repeat(2, 1fr);
             gap: 15px;
         }
 
-        .card {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        }
-
-        .card h3 {
-            margin-top: 0;
-        }
-
         .menu {
-            margin-top: 25px;
+            margin-top: 20px;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            grid-template-columns: repeat(2, 1fr);
             gap: 12px;
         }
 
@@ -84,6 +79,60 @@
             background: #111827;
             color: white;
             font-size: 15px;
+            cursor: pointer;
+        }
+
+        button.secondary {
+            background: #6b7280;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 13px;
+            margin: 7px 0 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .ledger {
+            position: relative;
+        }
+
+        .ledger h3 {
+            margin-top: 0;
+        }
+
+        .delete {
+            background: #dc2626;
+            padding: 8px 12px;
+            font-size: 13px;
+            margin-top: 8px;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 30px;
+            color: #6b7280;
+        }
+
+        @media (max-width: 600px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+
+            .menu {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -96,81 +145,381 @@
 
 <div class="container">
 
-    <div class="status">
-        Internet:
-        <span id="networkStatus"></span>
-    </div>
+    <!-- DASHBOARD -->
+    <section id="dashboard">
 
-    <div class="dashboard">
-
-        <div class="card">
-            <h3>Sales</h3>
-            <strong>Rs. 0</strong>
+        <div class="status">
+            Internet:
+            <span id="networkStatus"></span>
         </div>
 
-        <div class="card">
-            <h3>Purchases</h3>
-            <strong>Rs. 0</strong>
+        <div class="dashboard">
+
+            <div class="card">
+                <h3>Sales</h3>
+                <strong>Rs. 0</strong>
+            </div>
+
+            <div class="card">
+                <h3>Purchases</h3>
+                <strong>Rs. 0</strong>
+            </div>
+
+            <div class="card">
+                <h3>Receivable</h3>
+                <strong>Rs. 0</strong>
+            </div>
+
+            <div class="card">
+                <h3>Payable</h3>
+                <strong>Rs. 0</strong>
+            </div>
+
+            <div class="card">
+                <h3>Cash</h3>
+                <strong>Rs. 0</strong>
+            </div>
+
+            <div class="card">
+                <h3>Stock</h3>
+                <strong>0</strong>
+            </div>
+
         </div>
 
-        <div class="card">
-            <h3>Receivable</h3>
-            <strong>Rs. 0</strong>
+        <div class="menu">
+            <button onclick="showLedgers()">Customers & Suppliers</button>
+            <button>Products</button>
+            <button>Sales Invoice</button>
+            <button>Purchase Invoice</button>
+            <button>Payments</button>
+            <button>Reports</button>
         </div>
 
-        <div class="card">
-            <h3>Payable</h3>
-            <strong>Rs. 0</strong>
+    </section>
+
+
+    <!-- LEDGERS -->
+    <section id="ledgersPage" class="hidden">
+
+        <button class="secondary" onclick="showDashboard()">
+            ← Back to Dashboard
+        </button>
+
+        <h2>Customers & Suppliers</h2>
+
+        <div class="form-box">
+
+            <h3>Add New Ledger</h3>
+
+            <label>Name</label>
+            <input id="ledgerName" type="text"
+                   placeholder="Customer or supplier name">
+
+            <label>City</label>
+            <input id="ledgerCity" type="text"
+                   placeholder="City">
+
+            <label>Phone</label>
+            <input id="ledgerPhone" type="tel"
+                   placeholder="Phone number">
+
+            <label>Type</label>
+            <select id="ledgerType">
+                <option value="customer">Customer</option>
+                <option value="supplier">Supplier</option>
+            </select>
+
+            <label>Opening Balance</label>
+            <input id="openingBalance" type="number"
+                   placeholder="0">
+
+            <button onclick="addLedger()">Save Ledger</button>
+
         </div>
 
-        <div class="card">
-            <h3>Cash</h3>
-            <strong>Rs. 0</strong>
-        </div>
+        <h3>My Ledgers</h3>
 
-        <div class="card">
-            <h3>Stock</h3>
-            <strong>0</strong>
-        </div>
+        <div id="ledgerList"></div>
 
-    </div>
-
-    <div class="menu">
-
-        <button>Customers & Suppliers</button>
-        <button>Products</button>
-        <button>Sales Invoice</button>
-        <button>Purchase Invoice</button>
-        <button>Payments</button>
-        <button>Reports</button>
-
-    </div>
+    </section>
 
 </div>
 
+
 <script>
 
-function updateNetworkStatus() {
+    /* -----------------------------
+       NETWORK STATUS
+    ----------------------------- */
 
-    const status = document.getElementById("networkStatus");
+    function updateNetworkStatus() {
 
-    if (navigator.onLine) {
-        status.textContent = "Online";
-        status.className = "online";
-    } else {
-        status.textContent = "Offline";
-        status.className = "offline";
+        const status = document.getElementById("networkStatus");
+
+        if (navigator.onLine) {
+            status.textContent = "Online";
+            status.className = "online";
+        } else {
+            status.textContent = "Offline";
+            status.className = "offline";
+        }
     }
-}
 
-updateNetworkStatus();
+    updateNetworkStatus();
 
-window.addEventListener("online", updateNetworkStatus);
-window.addEventListener("offline", updateNetworkStatus);
+    window.addEventListener("online", updateNetworkStatus);
+    window.addEventListener("offline", updateNetworkStatus);
 
-if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("./sw.js");
-}
+
+    /* -----------------------------
+       LOCAL DATABASE
+    ----------------------------- */
+
+    let db;
+
+    const request = indexedDB.open("BusinessManagementDB", 1);
+
+    request.onupgradeneeded = function(event) {
+
+        db = event.target.result;
+
+        if (!db.objectStoreNames.contains("ledgers")) {
+
+            db.createObjectStore("ledgers", {
+                keyPath: "id",
+                autoIncrement: true
+            });
+
+        }
+    };
+
+    request.onsuccess = function(event) {
+
+        db = event.target.result;
+
+        console.log("Database ready");
+
+        displayLedgers();
+    };
+
+    request.onerror = function() {
+
+        alert("Could not open local database.");
+
+    };
+
+
+    /* -----------------------------
+       PAGE NAVIGATION
+    ----------------------------- */
+
+    function showLedgers() {
+
+        document.getElementById("dashboard")
+            .classList.add("hidden");
+
+        document.getElementById("ledgersPage")
+            .classList.remove("hidden");
+
+        displayLedgers();
+    }
+
+    function showDashboard() {
+
+        document.getElementById("ledgersPage")
+            .classList.add("hidden");
+
+        document.getElementById("dashboard")
+            .classList.remove("hidden");
+    }
+
+
+    /* -----------------------------
+       ADD LEDGER
+    ----------------------------- */
+
+    function addLedger() {
+
+        const name =
+            document.getElementById("ledgerName").value.trim();
+
+        const city =
+            document.getElementById("ledgerCity").value.trim();
+
+        const phone =
+            document.getElementById("ledgerPhone").value.trim();
+
+        const type =
+            document.getElementById("ledgerType").value;
+
+        const openingBalance =
+            Number(document.getElementById("openingBalance").value) || 0;
+
+
+        if (!name) {
+
+            alert("Please enter a name.");
+
+            return;
+        }
+
+
+        const transaction =
+            db.transaction(["ledgers"], "readwrite");
+
+        const store =
+            transaction.objectStore("ledgers");
+
+
+        store.add({
+
+            name: name,
+            city: city,
+            phone: phone,
+            type: type,
+            openingBalance: openingBalance,
+            createdAt: new Date().toISOString()
+
+        });
+
+
+        transaction.oncomplete = function() {
+
+            alert("Ledger saved successfully.");
+
+            document.getElementById("ledgerName").value = "";
+            document.getElementById("ledgerCity").value = "";
+            document.getElementById("ledgerPhone").value = "";
+            document.getElementById("openingBalance").value = "";
+
+            displayLedgers();
+
+        };
+
+    }
+
+
+    /* -----------------------------
+       DISPLAY LEDGERS
+    ----------------------------- */
+
+    function displayLedgers() {
+
+        if (!db) return;
+
+        const transaction =
+            db.transaction(["ledgers"], "readonly");
+
+        const store =
+            transaction.objectStore("ledgers");
+
+        const request =
+            store.getAll();
+
+
+        request.onsuccess = function() {
+
+            const ledgers = request.result;
+
+            const list =
+                document.getElementById("ledgerList");
+
+            list.innerHTML = "";
+
+
+            if (ledgers.length === 0) {
+
+                list.innerHTML =
+                    '<div class="empty">No ledgers yet.</div>';
+
+                return;
+            }
+
+
+            ledgers.forEach(function(ledger) {
+
+                const div =
+                    document.createElement("div");
+
+                div.className = "ledger";
+
+                div.innerHTML = `
+
+                    <h3>${ledger.name}</h3>
+
+                    <p>
+                        <strong>Type:</strong>
+                        ${ledger.type}
+                    </p>
+
+                    <p>
+                        <strong>City:</strong>
+                        ${ledger.city || "-"}
+                    </p>
+
+                    <p>
+                        <strong>Phone:</strong>
+                        ${ledger.phone || "-"}
+                    </p>
+
+                    <p>
+                        <strong>Opening Balance:</strong>
+                        Rs. ${ledger.openingBalance}
+                    </p>
+
+                    <button class="delete"
+                        onclick="deleteLedger(${ledger.id})">
+                        Delete
+                    </button>
+
+                `;
+
+                list.appendChild(div);
+
+            });
+
+        };
+
+    }
+
+
+    /* -----------------------------
+       DELETE LEDGER
+    ----------------------------- */
+
+    function deleteLedger(id) {
+
+        if (!confirm("Delete this ledger?")) return;
+
+
+        const transaction =
+            db.transaction(["ledgers"], "readwrite");
+
+        const store =
+            transaction.objectStore("ledgers");
+
+        store.delete(id);
+
+
+        transaction.oncomplete = function() {
+
+            displayLedgers();
+
+        };
+
+    }
+
+
+    /* -----------------------------
+       SERVICE WORKER
+    ----------------------------- */
+
+    if ("serviceWorker" in navigator) {
+
+        navigator.serviceWorker.register("./sw.js");
+
+    }
 
 </script>
 

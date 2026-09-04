@@ -1482,7 +1482,160 @@ function calculateSaleBalance() {
     document.getElementById("saleCredit").value =
         credit;
 }
+function saveSale() {
 
+    const date =
+        document.getElementById("saleDate").value;
+
+    const customerId =
+        Number(document.getElementById("saleCustomer").value);
+
+    const productId =
+        Number(document.getElementById("saleProduct").value);
+
+    const quantity =
+        Number(document.getElementById("saleQuantity").value);
+
+    const price =
+        Number(document.getElementById("salePrice").value);
+
+    const total =
+        Number(document.getElementById("saleTotal").value);
+
+    const received =
+        Number(document.getElementById("saleReceived").value) || 0;
+
+    const account =
+        document.getElementById("saleAccount").value;
+
+    if (!date || !customerId || !productId || quantity <= 0 || price < 0) {
+        alert("Please fill all required fields.");
+        return;
+    }
+
+    if (received > total) {
+        alert("Received amount cannot be greater than invoice total.");
+        return;
+    }
+
+    const credit = total - received;
+
+    const transaction =
+        db.transaction(
+            ["sales", "products", "ledgers"],
+            "readwrite"
+        );
+
+    const salesStore =
+        transaction.objectStore("sales");
+
+    const productsStore =
+        transaction.objectStore("products");
+
+    const ledgersStore =
+        transaction.objectStore("ledgers");
+
+    const productRequest =
+        productsStore.get(productId);
+
+    const customerRequest =
+        ledgersStore.get(customerId);
+
+    productRequest.onsuccess = function () {
+
+        const product = productRequest.result;
+
+        if (!product) {
+            alert("Product not found.");
+            transaction.abort();
+            return;
+        }
+
+        if (product.currentStock < quantity) {
+            alert(
+                "Not enough stock. Available stock: " +
+                product.currentStock
+            );
+            transaction.abort();
+            return;
+        }
+
+        const customer = customerRequest.result;
+
+        if (!customer) {
+            alert("Customer not found.");
+            transaction.abort();
+            return;
+        }
+
+        const invoiceNumber =
+            "INV-" +
+            Date.now();
+
+        const sale = {
+
+            invoiceNumber: invoiceNumber,
+
+            date: date,
+
+            customerId: customerId,
+
+            customerName: customer.name,
+
+            productId: productId,
+
+            productName: product.name,
+
+            quantity: quantity,
+
+            price: price,
+
+            total: total,
+
+            received: received,
+
+            credit: credit,
+
+            paymentAccount: account,
+
+            createdAt: new Date().toISOString()
+        };
+
+        salesStore.add(sale);
+
+        product.currentStock =
+            product.currentStock - quantity;
+
+        productsStore.put(product);
+    };
+
+    transaction.oncomplete = function () {
+
+        document.getElementById("saleMessage").innerHTML =
+            "<div class='status online'>" +
+            "Invoice saved successfully! " +
+            "Invoice No: " +
+            "INV-" + "..." +
+            "</div>";
+
+        alert("Sales Invoice saved successfully.");
+
+        document.getElementById("saleQuantity").value = "";
+        document.getElementById("saleReceived").value = "";
+
+        document.getElementById("saleTotal").value = "";
+        document.getElementById("saleCredit").value = "";
+
+        loadSaleProducts();
+    };
+
+    transaction.onerror = function () {
+
+        alert(
+            "There was a problem saving the invoice."
+        );
+    };
+        }
 </script>
 
 

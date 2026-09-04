@@ -1243,7 +1243,232 @@ if (
     );
 
 }
+/* =========================
+   SALES INVOICE
+========================= */
 
+function showSales() {
+    hideAllPages();
+
+    let salesPage = document.getElementById("salesPage");
+
+    if (!salesPage) {
+        salesPage = document.createElement("section");
+        salesPage.id = "salesPage";
+        salesPage.innerHTML = `
+            <button class="secondary" onclick="showDashboard()">
+                ← Back to Dashboard
+            </button>
+
+            <h2>Sales Invoice</h2>
+
+            <div class="form-box">
+
+                <label>Date</label>
+                <input id="saleDate" type="date">
+
+                <label>Customer</label>
+                <select id="saleCustomer">
+                    <option value="">Select Customer</option>
+                </select>
+
+                <label>Product</label>
+                <select id="saleProduct" onchange="updateSalePrice()">
+                    <option value="">Select Product</option>
+                </select>
+
+                <label>Quantity</label>
+                <input id="saleQuantity" type="number"
+                       min="1" placeholder="Quantity"
+                       oninput="calculateSaleTotal()">
+
+                <label>Selling Price</label>
+                <input id="salePrice" type="number"
+                       min="0" placeholder="Selling price"
+                       oninput="calculateSaleTotal()">
+
+                <label>Total</label>
+                <input id="saleTotal" type="number" readonly>
+
+                <label>Amount Received</label>
+                <input id="saleReceived" type="number"
+                       min="0" placeholder="Amount received"
+                       oninput="calculateSaleBalance()">
+
+                <label>Payment Account</label>
+                <select id="saleAccount">
+                    <option value="Cash">Cash</option>
+                    <option value="Bank">Bank</option>
+                    <option value="Easypaisa">Easypaisa</option>
+                </select>
+
+                <label>Receivable / Credit</label>
+                <input id="saleCredit" type="number" readonly>
+
+                <button onclick="saveSale()">
+                    Save Sales Invoice
+                </button>
+
+            </div>
+
+            <div id="saleMessage"></div>
+        `;
+
+        document.querySelector(".container").appendChild(salesPage);
+    }
+
+    salesPage.classList.remove("hidden");
+
+    document.getElementById("saleDate").value =
+        new Date().toISOString().split("T")[0];
+
+    loadSaleCustomers();
+    loadSaleProducts();
+}
+
+
+function loadSaleCustomers() {
+
+    const select =
+        document.getElementById("saleCustomer");
+
+    select.innerHTML =
+        '<option value="">Select Customer</option>';
+
+    const transaction =
+        db.transaction(["ledgers"], "readonly");
+
+    const store =
+        transaction.objectStore("ledgers");
+
+    const request = store.getAll();
+
+    request.onsuccess = function() {
+
+        request.result
+            .filter(ledger => ledger.type === "customer")
+            .forEach(customer => {
+
+                const option =
+                    document.createElement("option");
+
+                option.value = customer.id;
+                option.textContent =
+                    customer.name;
+
+                select.appendChild(option);
+            });
+    };
+}
+
+
+function loadSaleProducts() {
+
+    const select =
+        document.getElementById("saleProduct");
+
+    select.innerHTML =
+        '<option value="">Select Product</option>';
+
+    const transaction =
+        db.transaction(["products"], "readonly");
+
+    const store =
+        transaction.objectStore("products");
+
+    const request = store.getAll();
+
+    request.onsuccess = function() {
+
+        request.result.forEach(product => {
+
+            const option =
+                document.createElement("option");
+
+            option.value = product.id;
+
+            option.textContent =
+                product.name +
+                " (Stock: " +
+                product.currentStock +
+                ")";
+
+            select.appendChild(option);
+        });
+    };
+}
+
+
+function updateSalePrice() {
+
+    const productId =
+        Number(
+            document.getElementById("saleProduct").value
+        );
+
+    if (!productId) return;
+
+    const transaction =
+        db.transaction(["products"], "readonly");
+
+    const store =
+        transaction.objectStore("products");
+
+    const request =
+        store.get(productId);
+
+    request.onsuccess = function() {
+
+        if (request.result) {
+
+            document.getElementById("salePrice").value =
+                request.result.sellingPrice;
+
+            calculateSaleTotal();
+        }
+    };
+}
+
+
+function calculateSaleTotal() {
+
+    const quantity =
+        Number(
+            document.getElementById("saleQuantity").value
+        ) || 0;
+
+    const price =
+        Number(
+            document.getElementById("salePrice").value
+        ) || 0;
+
+    const total = quantity * price;
+
+    document.getElementById("saleTotal").value =
+        total;
+
+    calculateSaleBalance();
+}
+
+
+function calculateSaleBalance() {
+
+    const total =
+        Number(
+            document.getElementById("saleTotal").value
+        ) || 0;
+
+    const received =
+        Number(
+            document.getElementById("saleReceived").value
+        ) || 0;
+
+    const credit =
+        Math.max(0, total - received);
+
+    document.getElementById("saleCredit").value =
+        credit;
+}
 
 </script>
 

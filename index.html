@@ -1,27 +1,178 @@
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="theme-color" content="#111827">
+
+    <link rel="manifest" href="./manifest.json">
+
     <title>Business Management System</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: #f3f4f6;
+            color: #111827;
+        }
+
+        header {
+            background: #111827;
+            color: white;
+            padding: 20px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 22px;
+        }
+
+        .container {
+            padding: 20px;
+            max-width: 1000px;
+            margin: auto;
+        }
+
+        .status {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .online {
+            color: green;
+            font-weight: bold;
+        }
+
+        .offline {
+            color: red;
+            font-weight: bold;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 15px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .card h3 {
+            margin-top: 0;
+        }
+
+        .menu {
+            margin-top: 25px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+        }
+
+        button {
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            background: #111827;
+            color: white;
+            font-size: 15px;
+        }
+    </style>
 </head>
 
 <body>
+
+<header>
     <h1>My Business Management System</h1>
+</header>
 
-    <h2>Dashboard</h2>
+<div class="container">
 
-    <p>Total Sales: Rs. 0</p>
-    <p>Total Purchases: Rs. 0</p>
-    <p>Total Receivable: Rs. 0</p>
-    <p>Total Payable: Rs. 0</p>
-    <p>Cash Balance: Rs. 0</p>
+    <div class="status">
+        Internet:
+        <span id="networkStatus"></span>
+    </div>
 
-    <h2>Menu</h2>
+    <div class="dashboard">
 
-    <button>Customers & Suppliers</button>
-    <button>Products</button>
-    <button>Sales</button>
-    <button>Purchases</button>
-    <button>Payments</button>
-    <button>Reports</button>
+        <div class="card">
+            <h3>Sales</h3>
+            <strong>Rs. 0</strong>
+        </div>
+
+        <div class="card">
+            <h3>Purchases</h3>
+            <strong>Rs. 0</strong>
+        </div>
+
+        <div class="card">
+            <h3>Receivable</h3>
+            <strong>Rs. 0</strong>
+        </div>
+
+        <div class="card">
+            <h3>Payable</h3>
+            <strong>Rs. 0</strong>
+        </div>
+
+        <div class="card">
+            <h3>Cash</h3>
+            <strong>Rs. 0</strong>
+        </div>
+
+        <div class="card">
+            <h3>Stock</h3>
+            <strong>0</strong>
+        </div>
+
+    </div>
+
+    <div class="menu">
+
+        <button>Customers & Suppliers</button>
+        <button>Products</button>
+        <button>Sales Invoice</button>
+        <button>Purchase Invoice</button>
+        <button>Payments</button>
+        <button>Reports</button>
+
+    </div>
+
+</div>
+
+<script>
+
+function updateNetworkStatus() {
+
+    const status = document.getElementById("networkStatus");
+
+    if (navigator.onLine) {
+        status.textContent = "Online";
+        status.className = "online";
+    } else {
+        status.textContent = "Offline";
+        status.className = "offline";
+    }
+}
+
+updateNetworkStatus();
+
+window.addEventListener("online", updateNetworkStatus);
+window.addEventListener("offline", updateNetworkStatus);
+
+if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("./sw.js");
+}
+
+</script>
+
 </body>
 </html>

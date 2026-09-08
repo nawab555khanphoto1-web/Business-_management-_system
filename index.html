@@ -813,11 +813,11 @@ function displayLedgers() {
                         </p>
 
                         <p>
-                            <strong>
-                                Opening Balance:
-                            </strong>
+                        <strong>
+    Balance:
+</strong>
 
-                            Rs. ${ledger.openingBalance}
+Rs. ${Number(ledger.openingBalance || 0) + Number(ledger.balance || 0)}
                         </p>
 
                         <button

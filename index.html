@@ -1571,10 +1571,17 @@ function calculateSaleBalance() {
 
         salesStore.add(sale);
 
-        product.currentStock =
-            Number(product.currentStock) - quantity;
+// Update customer ledger balance
+customer.balance =
+    Number(customer.balance || 0) + credit;
 
-        productsStore.put(product);
+ledgersStore.put(customer);
+
+// Update product stock
+product.currentStock =
+    Number(product.currentStock) - quantity;
+
+productsStore.put(product);
     }
 
     productRequest.onsuccess = function() {

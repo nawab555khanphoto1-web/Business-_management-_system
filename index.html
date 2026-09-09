@@ -711,62 +711,40 @@ function addLedger() {
                 .value = "";
 
 
-            document
-                .getElementById("openingBalance")
-                .value = "";
-
-
-            displayLedgers();
-
-        };
-
-}
-
-
-
-/* =========================
-   DISPLAY LEDGERS
-========================= */
-
-
-function displayLedgers() {
+         function displayLedgers() {
 
     if (!db) return;
 
-
     const transaction =
         db.transaction(
-            ["ledgers"],
+            ["ledgers", "sales"],
             "readonly"
         );
 
+    const ledgersStore =
+        transaction.objectStore("ledgers");
 
-    const store =
-        transaction.objectStore(
-            "ledgers"
-        );
+    const salesStore =
+        transaction.objectStore("sales");
 
+    const ledgerRequest =
+        ledgersStore.getAll();
 
-    const request =
-        store.getAll();
+    const salesRequest =
+        salesStore.getAll();
 
+    ledgerRequest.onsuccess = function() {
 
-    request.onsuccess =
-        function() {
+        const ledgers = ledgerRequest.result;
 
-            const ledgers =
-                request.result;
+        salesRequest.onsuccess = function() {
 
+            const sales = salesRequest.result;
 
             const list =
-                document
-                .getElementById(
-                    "ledgerList"
-                );
-
+                document.getElementById("ledgerList");
 
             list.innerHTML = "";
-
 
             if (ledgers.length === 0) {
 
@@ -774,43 +752,88 @@ function displayLedgers() {
                     '<div class="empty">No ledgers yet.</div>';
 
                 return;
-
             }
 
+            ledgers.forEach(function(ledger) {
 
-            ledgers.forEach(
-                function(ledger) {
+                let balance =
+                    Number(ledger.openingBalance || 0);
 
-                    const div =
-                        document.createElement(
-                            "div"
-                        );
+                if (ledger.type === "customer") {
+
+                    sales
+                        .filter(
+                            sale =>
+                                Number(sale.customerId) ===
+                                Number(ledger.id)
+                        )
+                        .forEach(function(sale) {
+
+                            balance +=
+                                Number(sale.credit || 0);
+
+                        });
+
+                }
+
+                const div =
+                    document.createElement("div");
+
+                div.className = "item";
+
+                div.innerHTML = `
+
+                    <h3>
+                        ${ledger.name}
+                    </h3>
+
+                    <p>
+                        <strong>Type:</strong>
+                        ${ledger.type}
+                    </p>
+
+                    <p>
+                        <strong>City:</strong>
+                        ${ledger.city || "-"}
+                    </p>
+
+                    <p>
+                        <strong>Phone:</strong>
+                        ${ledger.phone || "-"}
+                    </p>
+
+                    <p>
+                        <strong>Balance:</strong>
+                        Rs. ${balance}
+                    </p>
+
+                    <button
+                        class="delete"
+                        onclick="deleteLedger(${ledger.id})">
+
+                        Delete
+
+                    </button>
+
+                `;
+
+                list.appendChild(div);
+
+            });
+
+        };
+
+    };
+
+}   
 
 
-                    div.className =
-                        "item";
+/* =========================
+   DISPLAY LEDGERS
+========================= */
 
 
-                    div.innerHTML = `
 
-                        <h3>
-                            ${ledger.name}
-                        </h3>
-
-                        <p>
-                            <strong>Type:</strong>
-                            ${ledger.type}
-                        </p>
-
-                        <p>
-                            <strong>City:</strong>
-                            ${ledger.city || "-"}
-                        </p>
-
-                        <p>
-                            <strong>Phone:</strong>
-                            ${ledger.phone || "-"}
-                        </p>
 
                         <p>
                         <strong>
